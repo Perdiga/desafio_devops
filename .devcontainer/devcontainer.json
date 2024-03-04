@@ -1,0 +1,26 @@
+{
+	"name": "desafio_devops",
+	"service": "workspace",
+    "workspaceFolder": "/desafio_devops",
+	"features": {
+		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/devcontainers/features/aws-cli:1": {},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+		"ghcr.io/casl0/devcontainer-features/eksctl:1": {},
+		"ghcr.io/devcontainers/features/node:1": {}
+	},
+	"customizations": {
+        "extensions": [
+            "ms-vscode-remote.remote-containers"
+        ],
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
+
+	"forwardPorts": [],
+	"dockerComposeFile": ["docker-compose.workspace.yml"],
+	"remoteUser":"root"	
+}
