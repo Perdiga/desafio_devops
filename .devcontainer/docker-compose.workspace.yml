@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  workspace:
+    build:
+      dockerfile: .devcontainer/Dockerfile
+      context: .
+    command: sleep infinity
+    volumes:
+      - ./:/desafio_devops
+      - ./.aws:/root/.aws
