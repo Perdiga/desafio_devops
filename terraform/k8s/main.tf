@@ -15,6 +15,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
+  ecr_name    = "challange-ecr"
   cluster_name    = "challange-eks"
   vpc_name        = "challange-vpc"
   node_group_name = "private-nodes"
