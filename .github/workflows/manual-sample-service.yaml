@@ -1,4 +1,4 @@
-name: Deploy Sample-Service
+name: Deploy Sample-Service Manually
 
 on:
   workflow_dispatch:
@@ -49,11 +49,9 @@ jobs:
       run: terraform validate
     
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
 
     - name: Patch Deployment
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: PATCH='{"spec":{"template":{"metadata":{"annotations":{"timestamp":"'$(date)'"}}}}}'; kubectl patch deployment sample-service -p "$PATCH"
   terraform-sample-service-destroy:
     name: Destroy sample-service Infrastrucure
@@ -89,7 +87,6 @@ jobs:
       run: terraform validate
     
     - name: Terraform Destroy
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform destroy -auto-approve -input=false -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
 
   
