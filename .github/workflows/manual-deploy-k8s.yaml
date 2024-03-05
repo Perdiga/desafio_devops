@@ -129,8 +129,8 @@ jobs:
       run: terraform apply -auto-approve -input=false -target=null_resource.kubectl
 
     - name: Terraform Destroy
-        id: destroy
-        run: terraform destroy -auto-approve
+      id: destroy
+      run: terraform destroy -auto-approve
   terraform-k8s-destroy:
     name: Destroy k8s Infrastrucure
     if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
