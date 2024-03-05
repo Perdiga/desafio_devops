@@ -39,12 +39,12 @@ data "terraform_remote_state" "ecr" {
 
 locals {
   timestream_database_name = "ChallangeDB"
-  timestamp = timestamp()
-  image_name = "sample-service"
-  image_tag ="latest"
-  force_image_rebuild = true
+  timestamp                = timestamp()
+  image_name               = "sample-service"
+  image_tag                = "latest"
+  force_image_rebuild      = true
 
-  docker_img_src_path = "${path.module}/src"
+  docker_img_src_path   = "${path.module}/src"
   docker_img_src_sha256 = sha256(join("", [for f in fileset(".", "${local.docker_img_src_path}/**") : filebase64(f)]))
 
   docker_build_cmd = <<-EOT

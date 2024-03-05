@@ -85,5 +85,9 @@ jobs:
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false 
+      run: terraform apply -auto-approve -input=false -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+
+    - name: Patch Deployment
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: kubectl patch deployment sample-service -p '{"spec":{"template":{"metadata":{"annotations":{"timestamp":"'$(date)'"}}}}}'
   

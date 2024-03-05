@@ -30,11 +30,11 @@ resource "null_resource" "push" {
         docker push ${data.terraform_remote_state.ecr.outputs.ecr_repository_url}:${local.image_tag}
     EOT
   }
-  depends_on = [ null_resource.build ]
+  depends_on = [null_resource.build]
 }
 
 resource "kubectl_manifest" "deploy" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,5 +58,5 @@ spec:
 
 YAML
 
-    depends_on = [ null_resource.build,null_resource.push ]
-} 
+  depends_on = [null_resource.build, null_resource.push]
+}

@@ -7,3 +7,5 @@
 
 # AWS credentials
 .aws
+
+**/node_modules/*
