@@ -84,6 +84,14 @@ jobs:
       id: fmt
       run: terraform fmt -check
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: "us-east-1"
+
+    - name: Generate kubeconfig
+      run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+
     - name: Executes Terraform validate
       id: validate
       run: terraform validate
