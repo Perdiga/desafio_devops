@@ -128,7 +128,7 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        managed-session-policies: arn:aws:iam::aws:policy/AdministratorAccess 
+        aws-region: "us-east-1"
 
     - name: Generate kubeconfig
       run: echo "EKS_CREDS=$(aws eks update-kubeconfig --region us-east-2 --name my-cluster --dry-run | base64) >> $GITHUB_ENV
