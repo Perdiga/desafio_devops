@@ -136,3 +136,23 @@ Quando disparada por um merge na `main`, a action faz a validação de estilo, d
 
 #### cicd-deploy-k8s-complete
 Essa action é disparada manualmente e serve para criar ou destruir a infraestrutura manualmente
+
+# Sample service 
+
+Esse é um pequeno serviço de teste que sobe um AWS Timestream e gera registros
+
+# Grafana
+
+## Setup
+
+1. Certifique-se que o kubeconfig esteja atualizado, caso não esteja rode o seguinte comando `aws eks --region "us-east-1" update-kubeconfig --name challange-eks`
+
+2. Faça o port-foward do grafana para sua maquina executanto o seguinte comando `kubectl port-forward --namespace monitoring service/kube-prometheus-stack-grafana 3000:80`
+
+3. Certifique-se que o devcontainer também está fazendo o port-foward para a sua maquina, caso não esteja faça manualmente
+
+4. Para recuperar o login de acesso execute o seguinte comando `kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-user}" | base64 --decode`
+
+5. Para recuperar a senha de acesso execute o seguinte comando `kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode`
+
+Pronto agora basta acesar `localhost:3000` que você conseguir acesar o grafana
