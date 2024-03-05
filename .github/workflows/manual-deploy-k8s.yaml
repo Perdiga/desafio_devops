@@ -131,7 +131,7 @@ jobs:
         aws-region: "us-east-1"
 
     - name: Generate kubeconfig
-      run: echo "EKS_CREDS=$(aws eks update-kubeconfig --region us-east-2 --name my-cluster --dry-run | base64) >> $GITHUB_ENV"
+      run: echo "EKS_CREDS=$(aws eks update-kubeconfig --region us-east-1 --name my-cluster --dry-run | base64) >> $GITHUB_ENV"
 
     - name: Terraform Destroy
       id: destroy
