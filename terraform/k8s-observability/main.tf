@@ -21,7 +21,7 @@ data "terraform_remote_state" "eks" {
 
   config = {
     bucket = "mateusfer.tfstate"
-    key    = "challange/k8s.tfstate"
+    key    = "challange/k8s-observability.tfstate"
     region = "us-east-1"
   }
 }

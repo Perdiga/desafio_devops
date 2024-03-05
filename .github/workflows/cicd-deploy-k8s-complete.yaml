@@ -117,6 +117,7 @@ jobs:
 
     - name: Generate kubeconfig
       run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+      continue-on-error: true
 
     - name: Executes Terraform validate
       id: validate
@@ -156,7 +157,7 @@ jobs:
           })
 
     - name: Terraform Plan Status
-      if: steps.plan.outcome == 'failure'
+      if: steps.plan.outcome == 'failure' 
       run: exit 1
 
     - name: Terraform Apply
