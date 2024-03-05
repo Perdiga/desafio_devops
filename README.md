@@ -27,8 +27,8 @@ Referência: [DevContainer](https://containers.dev/)
 ```
 ├── README.md
 ├── .aws -> Configura credenciais no devcontainer
-├── .devcontainer -> Configura um container com todos os recursos necessários para execuçao do projeto
-├── .github -> Configura as GHA responsaveis pelo CI/CD do projeto
+├── .devcontainer -> Configura um container com todos os recursos necessários para execução do projeto
+├── .github -> Configura as GHA responsáveis pelo CI/CD do projeto
 ├── sample-service -> Configura um app responsável por enviar informações 'mockadas' para o AWS Timestream
 | ├── src -> App em nodejs
 | └── terraform -> Configura os recusos necessários para o sample-service
@@ -37,7 +37,7 @@ Referência: [DevContainer](https://containers.dev/)
 | │ ├── outputs.tf -> Configura outputs gerados pelos recursos criados
 | │ ├── timestream.tf -> Configura um banco e uma tabela no AWS timestream
 | │ └── variables.tf -> Declaração das variáveis do projeto
-└── terraform -> Configura os recusos necessários para esse projeto
+└── terraform -> Configura os recursos necessários para esse projeto
   ├── k8s -> Configura o k8s
   │ ├── dev.tfvars -> Configura as variáveis para o ambiente de desenvolvimento
   │ ├── ecr.tf -> Configura o container regitry
@@ -139,7 +139,7 @@ AWS_SECRET_ACCESS_KEY
 Também é necessário entrar na configuração de `Workflow permissions` e mudar a permissão para `Read and write permissions`
 
 #### cicd-deploy-k8s-complete
-Essa action é disparada em quando um código é mergado na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
+Essa action é disparada em quando um código é 'mergeado' na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um único ambiente essa feature não foi implementada.
 
 Quando disparada por um evento de PR, a action faz a validação de estilo, do código, cria o plano de execução e emite o resultado como comentário na PR
 
@@ -207,7 +207,7 @@ AWS_SECRET_ACCESS_KEY
 Também é necessário entrar na configuração de `Workflow permissions` e mudar a permissão para `Read and write permissions`
 
 #### cicd-sample-service
-Essa action é disparada em quando um código é mergado na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
+Essa action é disparada em quando um código é 'mergeado' na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
 
 Quando disparada por um evento de PR, a action faz a validação de estilo, do código, cria o plano de execução e emite o resultado como comentário na PR
 
@@ -222,29 +222,29 @@ Essa action é disparada manualmente e serve para criar ou destruir a infraestru
 
 1. Certifique-se que o kubeconfig esteja atualizado, caso não esteja rode o seguinte comando `aws eks --region "us-east-1" update-kubeconfig --name challange-eks`
 
-2. Faça o port-foward do grafana para sua maquina executanto o seguinte comando `kubectl port-forward --namespace monitoring service/kube-prometheus-stack-grafana 3000:80`
+2. Faça o port-foward do grafana para sua máquina executando o seguinte comando `kubectl port-forward --namespace monitoring service/kube-prometheus-stack-grafana 3000:80`
 
-3. Certifique-se que o devcontainer também está fazendo o port-foward para a sua maquina, caso não esteja faça manualmente
+3. Certifique-se que o devcontainer também está fazendo o port-foward para a sua máquina, caso não esteja faça manualmente
 
 4. Para recuperar o login de acesso execute o seguinte comando `kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-user}" | base64 --decode`
 
 5. Para recuperar a senha de acesso execute o seguinte comando `kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode`
 
-Pronto agora basta acesar `localhost:3000` que você conseguir acesar o grafana
+Pronto agora basta acessar `localhost:3000` que você conseguir acessar o grafana
 
-# Possiveis melhorias 
+# Possíveis melhorias 
 
 ## Terraform 
-- Tem alguns valores que deveriam ser váriaveis pois podem mudar de acordo com o ambiente.
-- O statefile não esta sendo criptografado, versionado e nem salvando o statelock no dynamoDB
+- Tem alguns valores que deveriam ser variáveis pois podem mudar de acordo com o ambiente.
+- O statefile não está sendo criptografado, versionado e nem salvando o statelock no dynamoDB
 - Configurar um IAM para o grafana conseguir acessar o AWS Timestream
 
 ## GHA
 
 - As pipelines estão configuradas para fazer o deploy somente em um ambiente
-- Existe uma dependencia da pipeline do simple-service com a do k8s mas estão iniciando ao mesmo tempo. Se o k8s não estiver criado a pipeline do simple-service vai falhar tentar fazer o deploy no k8s
+- Existe uma dependência da pipeline do simple-service com a do k8s mas estão iniciando ao mesmo tempo. Se o k8s não estiver criado a pipeline do simple-service vai falhar tentar fazer o deploy no k8s
 - A pipeline do simple-service poderia ter verificação lint, e de testes se fosse implementado um teste, assim ficaria mais perto do que seria uma pipeline produtiva
 
 ## DevContainer
 
-- Add localstack-pro para conseguir testar o projeto localmente (Tentei mas começou a dar erro na criação do cluster por falta de tempo parei)
+- Add localstack-pro para conseguir testar o projeto localmente (Tentei mas começou a dar erro na criação do cluster, por falta de tempo parei)
