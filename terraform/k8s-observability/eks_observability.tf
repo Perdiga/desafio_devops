@@ -1,9 +1,9 @@
 ##### Update kubeconfig #####
 # TODO: Não deveria precisar fazer isso por estou usando os providers
 resource "null_resource" "kubectl" {
-    provisioner "local-exec" {
-        command = "aws eks --region ${var.region} update-kubeconfig --name ${data.terraform_remote_state.eks.outputs.cluster_name}"
-    }
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${data.terraform_remote_state.eks.outputs.cluster_name}"
+  }
 }
 
 ##### Namespace #####
@@ -18,8 +18,8 @@ resource "kubernetes_namespace" "monitoring" {
 ##### Manage CRDs #####
 data "http" "yaml_file" {
   for_each = toset(local.crds_urls)
-  
-  url      = each.value
+
+  url = each.value
 }
 
 resource "null_resource" "status_check" {
@@ -35,14 +35,14 @@ resource "null_resource" "status_check" {
 resource "kubectl_manifest" "crd" {
   for_each = toset(local.crds_urls)
 
-  yaml_body  = data.http.yaml_file[each.value].response_body
+  yaml_body = data.http.yaml_file[each.value].response_body
 
   force_new         = local.crds_force_new
   server_side_apply = local.crds_server_side_apply
   force_conflicts   = local.crds_force_conflicts
   apply_only        = local.crds_apply_only
 
-  depends_on = [null_resource.status_check,null_resource.kubectl]
+  depends_on = [null_resource.status_check, null_resource.kubectl]
 }
 
 

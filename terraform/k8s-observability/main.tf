@@ -11,7 +11,7 @@ terraform {
     kubectl = {
       source = "gavinbunney/kubectl"
     }
-  }  
+  }
 }
 
 data "aws_caller_identity" "current" {}
