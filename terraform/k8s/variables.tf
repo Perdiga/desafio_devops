@@ -27,5 +27,3 @@ variable "scaling_config_min_size" {
 variable "update_confige_max_unavailable" {
   description = "Desired max number of unavailable worker nodes during node group update."
 }
-
-
