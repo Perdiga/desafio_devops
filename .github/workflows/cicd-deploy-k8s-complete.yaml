@@ -89,6 +89,7 @@ jobs:
   terraform-k8s-observability:
     name: Deploy k8s-observability Infrastrucure
     runs-on: ubuntu-latest
+    needs: [terraform-k8s]
     defaults:
       run:
         shell: bash
