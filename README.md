@@ -118,6 +118,13 @@ terraform destroy
 
 Este projeto conta com algumas actions para criação dos recursos
 
+Lembre-se de configurar as seguintes variáveis no `Actions secrets and variables`
+
+```
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+```
+
 #### cicd-deploy-k8s-complete
 Essa action é disparada em quando um código é mergado na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
 
