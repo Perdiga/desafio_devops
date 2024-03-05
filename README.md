@@ -24,6 +24,7 @@ Referência: [DevContainer](https://containers.dev/)
 
 # Estrutura de pastas
 
+```
 ├── README.md
 ├── .aws -> Configura credenciais no devcontainer
 ├── .devcontainer -> Configura um container com todos os recursos necessários para execuçao do projeto
@@ -49,6 +50,7 @@ Referência: [DevContainer](https://containers.dev/)
     ├── eks_observability.tf -> Configura o Prometheus Stack (Prometheus + Grafana)
     ├── main.tf -> Configura os providers, backend e ariáveis locais 
     └── variables.tf -> Declaração das variáveis do projeto
+```
     
 # Setup
 
