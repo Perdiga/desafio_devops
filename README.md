@@ -125,6 +125,8 @@ AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 ```
 
+Também é necessário entrar na configuração de `Workflow permissions` e mudar a permissão para `Read and write permissions`
+
 #### cicd-deploy-k8s-complete
 Essa action é disparada em quando um código é mergado na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
 
