@@ -47,22 +47,6 @@ locals {
   docker_img_src_path   = "${path.module}/src"
   docker_img_src_sha256 = sha256(join("", [for f in fileset(".", "${local.docker_img_src_path}/**") : filebase64(f)]))
 
-  docker_build_cmd = <<-EOT
-        cd ..
-
-        docker build -t ${local.image_name}:${local.image_tag} . \
-            --build-arg AWS_ACCESS_KEY_ID=${var.AWS_ACCESS_KEY_ID} \
-            --build-arg AWS_SECRET_ACCESS_KEY=${var.AWS_SECRET_ACCESS_KEY} \
-            --build-arg AWS_DEFAULT_REGION=${var.region}
-
-        aws ecr get-login-password --region ${var.region} | \
-            docker login --username AWS --password-stdin ${data.terraform_remote_state.ecr.outputs.ecr_uri}
-        
-        docker tag ${local.image_name}:${local.image_tag} ${data.terraform_remote_state.ecr.outputs.ecr_repository_url}:${local.image_tag}
-
-        docker push ${data.terraform_remote_state.ecr.outputs.ecr_repository_url}:${local.image_tag}
-    EOT
-
   tags = {
     Application = "Challange"
     CreatedBy   = "Mateus - Test"
