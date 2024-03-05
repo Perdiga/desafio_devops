@@ -33,6 +33,15 @@ jobs:
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.1.7"
+        
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: "us-east-1"
+
+    - name: Generate kubeconfig
+      run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+      continue-on-error: true
 
     - name: Executes Terraform init
       id: init
