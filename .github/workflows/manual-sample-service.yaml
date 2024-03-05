@@ -1,0 +1,93 @@
+name: Deploy Sample-Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform Action to Perform'
+        type: choice
+        options:
+        - Terraform_apply
+        - Terraform_destroy
+env:
+  TF_LOG: INFO
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  terraform-sample-service-apply:
+    name: Deploy sample-service Infrastrucure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./sample-service/terraform
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.1.7"
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: "us-east-1"
+
+    - name: Generate kubeconfig
+      run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+
+    - name: Executes Terraform init
+      id: init
+      run: terraform init
+
+    - name: Executes Terraform validate
+      id: validate
+      run: terraform validate
+    
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+
+    - name: Patch Deployment
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: PATCH='{"spec":{"template":{"metadata":{"annotations":{"timestamp":"'$(date)'"}}}}}'; kubectl patch deployment sample-service -p "$PATCH"
+  terraform-sample-service-apply:
+    name: Destroy sample-service Infrastrucure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./sample-service/terraform
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.1.7"
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: "us-east-1"
+
+    - name: Generate kubeconfig
+      run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+
+    - name: Executes Terraform init
+      id: init
+      run: terraform init
+
+    - name: Executes Terraform validate
+      id: validate
+      run: terraform validate
+    
+    - name: Terraform Destroy
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform destroy -auto-approve -input=false -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+
+  
