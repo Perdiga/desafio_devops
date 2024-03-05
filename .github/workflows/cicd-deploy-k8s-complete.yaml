@@ -1,0 +1,165 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - terraform/**
+  pull_request:
+    branches:
+    - main
+    paths:
+    - terraform/**
+
+env:
+  TF_LOG: INFO
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  terraform-k8s:
+    name: Deploy k8s Infrastrucure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform/k8s
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.1.7"
+
+    - name: Executes Terraform init
+      id: init
+      run: terraform init
+
+    - name: Executes Terraform format
+      id: fmt
+      run: terraform fmt -check
+
+    - name: Executes Terraform validate
+      id: validate
+      run: terraform validate
+    
+    - name: Executes Terraform plan
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan -no-color -input=false --var-file=dev.tfvars
+      continue-on-error: true
+
+    - uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        script: |
+          const output = `#### Deploy k8s Infrastrucure 🖌\`${{ steps.fmt.outcome }}\`
+          #### ⚙️ Terraform Initialization \`${{ steps.init.outcome }}\`
+          #### 🤖 Terraform Validation \`${{ steps.validate.outcome }}\`
+          #### 📖 Terraform Plan \`${{ steps.plan.outcome }}\`
+ 
+          <details><summary>Show Plan</summary>
+ 
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+ 
+          </details>
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+ 
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false --var-file=dev.tfvars
+  terraform-k8s-observability:
+    name: Deploy k8s-observability Infrastrucure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform/k8s-observability
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.1.7"
+
+    - name: Executes Terraform init
+      id: init
+      run: terraform init
+
+    - name: Executes Terraform format
+      id: fmt
+      run: terraform fmt -check
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: "us-east-1"
+
+    - name: Generate kubeconfig
+      run: aws eks update-kubeconfig --region us-east-1 --name challange-eks 
+
+    - name: Executes Terraform validate
+      id: validate
+      run: terraform validate
+    
+    - name: Executes Terraform plan 
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan -no-color -input=false --var-file=dev.tfvars
+      continue-on-error: true
+
+    - uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        script: |
+          const output = `#### Deploy k8s-observability Infrastrucure 🖌\`${{ steps.fmt.outcome }}\`
+          #### ⚙️ Terraform Initialization \`${{ steps.init.outcome }}\`
+          #### 🤖 Terraform Validation \`${{ steps.validate.outcome }}\`
+          #### 📖 Terraform Plan \`${{ steps.plan.outcome }}\`
+ 
+          <details><summary>Show Plan</summary>
+ 
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+ 
+          </details>
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+ 
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false --var-file=dev.tfvars
+

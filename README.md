@@ -67,14 +67,14 @@ aws iam create-policy \
     }
   ]
 }'
-ˋˋˋ
+```
 
 ## Deploy da infraestrutura
 
 ### Deploy/Destroy manual
 Primeiramente configure o arquivo credentials dentro da pasta .aws com as suas credencias
 
-Dentro do devcontainer, execute os seguintes comandos dentro da pasta `terraform`
+Dentro do devcontainer, execute os seguintes comandos:
 
 ```bash 
 cd terraform/k8s
@@ -94,11 +94,11 @@ terraform plan
 terraform apply -target=null_resource.kubectl # TODO: FIX ME
 
 terraform apply
-ˋˋˋ
+```
 
 A divisão em dois deploy é necessária por para criar alguns recursos de obsevability é necessário ter o k8s já criado. Tem como melhorar só preciso pensar com calma.
 
-Caso queira destruir os recursos, execute os seguintes comandos dentro da pasta `terraform`
+Caso queira destruir os recursos, execute os seguintes:
    
 ```bash 
 cd terraform/k8s
@@ -112,5 +112,27 @@ cd terraform/k8s-observability
 terraform init
 
 terraform destroy
-ˋˋˋ
+```
 
+### CI/CD
+
+Este projeto conta com algumas actions para criação dos recursos
+
+Lembre-se de configurar as seguintes variáveis no `Actions secrets and variables`
+
+```
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+```
+
+Também é necessário entrar na configuração de `Workflow permissions` e mudar a permissão para `Read and write permissions`
+
+#### cicd-deploy-k8s-complete
+Essa action é disparada em quando um código é mergado na `main` ou quando uma PR é aberta com target a `main`. Essa action pode ser melhorada para fazer deploy em vários ambientes, mas como o objetivo do desse projeto é criar um unico ambiente essa feature não foi implementada.
+
+Quando disparada por um evento de PR, a action faz a validação de estilo, do código, cria o plano de execução e emite o resultado como comentário na PR
+
+Quando disparada por um merge na `main`, a action faz a validação de estilo, do código, cria o plano de execução e aplica o plano de execução.
+
+#### cicd-deploy-k8s-complete
+Essa action é disparada manualmente e serve para criar ou destruir a infraestrutura manualmente
