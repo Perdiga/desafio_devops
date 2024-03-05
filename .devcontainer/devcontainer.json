@@ -7,7 +7,8 @@
 		"ghcr.io/devcontainers/features/aws-cli:1": {},
 		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
 		"ghcr.io/casl0/devcontainer-features/eksctl:1": {},
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
 	},
 	"customizations": {
         "extensions": [
@@ -20,7 +21,7 @@
         }
     },
 
-	"forwardPorts": [],
+	"forwardPorts": [3000],
 	"dockerComposeFile": ["docker-compose.workspace.yml"],
 	"remoteUser":"root"	
 }
