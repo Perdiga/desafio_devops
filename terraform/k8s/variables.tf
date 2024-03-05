@@ -3,6 +3,10 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "aws_account" {
+  description = "AWS account"
+}
+
 variable "eks_node_group_capacity_type" {
   description = "Type of capacity associated with the EKS Node Group. Valid values: ON_DEMAND, SPOT"
   default     = "ON_DEMAND"
