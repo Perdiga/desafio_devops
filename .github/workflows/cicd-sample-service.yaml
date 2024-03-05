@@ -33,7 +33,7 @@ jobs:
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.1.7"
-        
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -98,5 +98,5 @@ jobs:
 
     - name: Patch Deployment
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: kubectl patch deployment sample-service -p '{"spec":{"template":{"metadata":{"annotations":{"timestamp":"'$(date)'"}}}}}'
+      run: PATCH='{"spec":{"template":{"metadata":{"annotations":{"timestamp":"'$(date)'"}}}}}'; kubectl patch deployment sample-service -p "$PATCH"
   
